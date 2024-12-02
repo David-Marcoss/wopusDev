@@ -27,19 +27,22 @@ const register = async (userData:IAuthRegister):Promise<IAuthResponse> => {
 
         const {data} = await api().post(routeName, userData);
 
-        return data
+        return {
+            success: true,
+            message: "Cadastro efetuado com sucesso, faça login para acessar sua conta",
+            data: null
+        }
 
     } catch (error:any) {
 
-        if(!error.response.data){
-            return {
-                success: false,
-                message: "Falha ao cadastrar usuario",
-                data: null
-            }
-        }
+        console.log(error.response)
 
-        return error.response.data
+        return {
+            success: false,
+            message: error.response ? error.response.data.message : "Erro no servidor",
+            data: null
+        }
+    
     }
 }
 
@@ -50,19 +53,19 @@ const login = async (userData:IAuthLogin):Promise<IAuthResponse> => {
     try {
         const {data} = await api().post(routeName, userData);
 
-        return data
+        return {
+            success: true,
+            message: "Login efetuado com sucesso",
+            data
+        }
 
     } catch (error:any) {
 
-        if(!error.response.data){
-            return {
-                success: false,
-                message: "Erro no Login",
-                data: null
-            }
+        return {
+            success: false,
+            message: error.response ? error.response.data.message : "Erro no servidor",
+            data: null
         }
-
-        return error.response.data
     }
 }
 
