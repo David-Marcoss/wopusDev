@@ -13,7 +13,7 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiBody({ type: SingInDto })
   @HttpCode(HttpStatus.OK)
-  @Post('/singIn')
+  @Post('/login')
   login(@Body() userData: SingInDto) {
     return this.authService.singIn.execulte(userData);
   }

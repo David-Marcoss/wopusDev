@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend-api
     ports:
-      - '3000:3000'
+      - '3333:3333'
     depends_on:
       - psqlDb
     volumes:
