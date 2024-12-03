@@ -3,20 +3,15 @@ import { api } from "../ApiConfig"
 export interface ITask {
     id?: string,
     title: string,
-    description?: string,
-    status: "Pendente" | "Concluída" | "Em Progresso",
-    createdAt?: string,
-    completedAt?: string,
-    userId: string
+    description: string,
+    status: "PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO",
+    createdAt?: Date,
+    completedAt?: Date,
+    userId?: string
 }
 
-export interface ITasksResponse {
-    success: boolean,
-    message: string,
-    data: { tasks: ITask[] } | { task: ITask } | null
-}
 
-export class TasksService {
+class TasksService {
 
     authToken: string = ""
     routeName: string = "tasks"
@@ -25,103 +20,65 @@ export class TasksService {
         this.authToken = authToken
     }
 
-    getAll = async (): Promise<ITasksResponse> => {
+    getAll = async (): Promise<ITask[] | Error > => {
         try {
-            const { data } = await api().get(`${this.routeName}/get-all-tasks`, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
+            const { data } = await api().get(`${this.routeName}`)
             return data
         } catch (error: any) {
-            if (!error.response) {
-                return {
-                    success: false,
-                    message: "Falha ao buscar tarefas",
-                    data: null
-                }
-            }
-            return error.response.data
+
+            return error
         }
     }
 
-    getById = async (id: string): Promise<ITasksResponse> => {
+    // getById = async (id: string): Promise<ITasksResponse> => {
+    //     try {
+    //         const { data } = await api().get(`${this.routeName}/get-one-task/${id}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${this.authToken}`
+    //             }
+    //         })
+    //         return data
+    //     } catch (error: any) {
+    //         if (!error.response) {
+    //             return {
+    //                 success: false,
+    //                 message: "Falha ao buscar tarefa",
+    //                 data: null
+    //             }
+    //         }
+    //         return error.response.data
+    //     }
+    // }
+
+    create = async (createData: ITask): Promise<ITask | Error> => {
         try {
-            const { data } = await api().get(`${this.routeName}/get-one-task/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
+            const { data } = await api().post(`${this.routeName}`, createData)
             return data
         } catch (error: any) {
-            if (!error.response) {
-                return {
-                    success: false,
-                    message: "Falha ao buscar tarefa",
-                    data: null
-                }
-            }
-            return error.response.data
+            return error
         }
     }
 
-    create = async (createData: ITask): Promise<ITasksResponse> => {
+    updateById = async (id: string, updateData: ITask): Promise<ITask | Error> => {
         try {
-            const { data } = await api().post(`${this.routeName}/create-task`, createData, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
+            const { data } = await api().put(`${this.routeName}/${id}`, updateData)
             return data
         } catch (error: any) {
-            if (!error.response.data) {
-                return {
-                    success: false,
-                    message: "Falha ao criar tarefa",
-                    data: null
-                }
-            }
-            return error.response.data
+        
+            return error.mensage
         }
     }
 
-    updateById = async (id: string, updateData: ITask): Promise<undefined | ITasksResponse> => {
+    deleteById = async (id: string): Promise<null | Error> => {
         try {
-            const { data } = await api().patch(`${this.routeName}/update-task/${id}`, updateData, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
-            return undefined
+            await api().delete(`${this.routeName}/${id}`)
+            
+            return null
         } catch (error: any) {
-            if (!error.response.data) {
-                return {
-                    success: false,
-                    message: "Falha ao atualizar tarefa",
-                    data: null
-                }
-            }
-            return error.response.data
-        }
-    }
-
-    deleteById = async (id: string): Promise<undefined | ITasksResponse> => {
-        try {
-            await api().delete(`${this.routeName}/delete-task/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${this.authToken}`
-                }
-            })
-            return undefined
-        } catch (error: any) {
-            if (!error.response.data) {
-                return {
-                    success: false,
-                    message: "Falha ao deletar tarefa",
-                    data: null
-                }
-            }
-            return error.response.data
+            return error.message
         }
     }
 }
+
+
+export default new TasksService("authToken")

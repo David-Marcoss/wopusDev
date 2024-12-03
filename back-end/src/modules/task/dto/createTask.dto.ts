@@ -10,7 +10,7 @@ import {
 export enum TaskStatus {
   PENDENTE = 'PENDENTE',
   CONCLUIDA = 'CONCLUIDA',
-  CANCELADA = 'CANCELADA',
+  EM_PROGRESSO = 'EM_PROGRESSO',
 }
 
 export class CreateTaskDto {

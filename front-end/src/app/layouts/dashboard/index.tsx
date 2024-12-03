@@ -15,25 +15,28 @@ import {
 } from "@/components/ui/select"
 import { useEffect, useState } from "react"
 import { CreateTaskModal } from "@/components/ui/createTaskModal"
+import TasksService, { ITask } from "@/shared/services/api/tasks/TasksService"
 
 
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: "Pendente" | "Concluida" | "Em Progresso";
-  createdAt: string;
-  completedAt?: string;
-}
 
 
 export default function Dashboard() {
   const [search, setSearch] = useState<string>("");
-  const [status, setStatus] = useState<"Pendente" | "Concluida" | "Em Progresso" | "Todas">("Todas");
-  const [tasks, setTasks] = useState<Task[]>([]);
-
+  const [status, setStatus] = useState<"PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO" | "Todas">("Todas");
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [tasksFiltered, setTasksFiltered] = useState<ITask[]>([]);
+  
   useEffect(() => {
-    setTasks([]);
+    
+    TasksService.getAll().then((data) => {
+      if (data instanceof Error) {
+        console.log(data.message)
+      } else {
+        setTasks(data)
+        setTasksFiltered(data)
+      }
+    })
+
   }, []);
 
   useEffect(() => {
@@ -43,7 +46,8 @@ export default function Dashboard() {
       return matchesSearch && matchesStatus;
     });
 
-    setTasks(filteredTasks);
+    setTasksFiltered(filteredTasks);
+
   }, [search, status]);
 
   return (
@@ -79,9 +83,9 @@ export default function Dashboard() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Todas">Todas</SelectItem>
-                <SelectItem value="Pendente">Pendente</SelectItem>
-                <SelectItem value="Concluida">Concluida</SelectItem>
-                <SelectItem value="Em Progresso">Em Progresso</SelectItem>
+                <SelectItem value="PENDENTE">Pendente</SelectItem>
+                <SelectItem value="CONCLUIDA">Concluida</SelectItem>
+                <SelectItem value="EM_PROGRESSO">Em Progresso</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -96,13 +100,13 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {tasks.length === 0 ? (
+            {tasksFiltered.length === 0 ? (
               <div className="flex items-center justify-center m-10 p-10">
                 <h1>Ainda Não há tarefas cadastradas :( !!!</h1>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
-                {tasks.map((task) => (
+                {tasksFiltered.map((task) => (
                   <TaskCard key={task.id} task={task} />
                 ))}
               </div>

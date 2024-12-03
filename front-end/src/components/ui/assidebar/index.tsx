@@ -1,9 +1,11 @@
+"use client";
 
 import Link from "next/link";
 import { Button } from "../button";
 import { Sheet, SheetTrigger, SheetContent } from "../sheet";
 import { ClipboardList, Home, ListCheck, LogOut, MenuIcon, User } from "lucide-react";
 import { TooltipProvider } from "../tooltip";
+import { signOut } from "next-auth/react";
 
 export function AssideBar() {
     return (
@@ -46,13 +48,13 @@ export function AssideBar() {
 
                 <nav className="mt-auto px-4 py-5">
                     <TooltipProvider>
-                        <Link
+                        <button
                             className="flex items-center gap-3 px-2 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/20"
-                            href="#"
+                            onClick={() =>  signOut()}
                         >
                             <LogOut className="w-6 h-6" />
                             <span className="text-sm font-medium">Sair</span>
-                        </Link>
+                        </button>
                     </TooltipProvider>
                 </nav>
             </aside>

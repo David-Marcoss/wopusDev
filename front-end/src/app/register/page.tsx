@@ -11,11 +11,12 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthService } from "@/shared/services/api/auth/AuthService";
 import { toast } from "react-toastify";
 
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 
 type RegisterFormInputs = {
   name: string;
@@ -32,6 +33,16 @@ export default function RegisterForm() {
   } = useForm<RegisterFormInputs>();
 
   const router = useRouter();
+
+  // Verificar se o usuário já está logado
+  useEffect(() => {
+    getSession().then((session) => {
+      console.log(session)
+      if (session) {
+        redirect("/")
+      }
+    })
+  }, [])
 
   const onSubmit = async (data: RegisterFormInputs) => {
     setIsLoading(true);
@@ -69,9 +80,8 @@ export default function RegisterForm() {
               <Input
                 type="text"
                 placeholder="Digite seu nome"
-                className={`w-full bg-[#FFFCE1] ${
-                  errors.name ? "border-red-500" : ""
-                }`}
+                className={`w-full bg-[#FFFCE1] ${errors.name ? "border-red-500" : ""
+                  }`}
                 {...register("name", { required: "O nome é obrigatório" })}
               />
               {errors.name && (
@@ -86,9 +96,8 @@ export default function RegisterForm() {
               <Input
                 type="email"
                 placeholder="Digite seu email"
-                className={`w-full bg-[#FFFCE1] ${
-                  errors.email ? "border-red-500" : ""
-                }`}
+                className={`w-full bg-[#FFFCE1] ${errors.email ? "border-red-500" : ""
+                  }`}
                 {...register("email", {
                   required: "O email é obrigatório",
                   pattern: {
@@ -109,9 +118,8 @@ export default function RegisterForm() {
               <Input
                 type="password"
                 placeholder="Digite sua senha"
-                className={`w-full bg-[#FFFCE1] ${
-                  errors.password ? "border-red-500" : ""
-                }`}
+                className={`w-full bg-[#FFFCE1] ${errors.password ? "border-red-500" : ""
+                  }`}
                 {...register("password", {
                   required: "A senha é obrigatória",
                   minLength: {

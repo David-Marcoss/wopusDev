@@ -15,17 +15,11 @@ import { DropdownMenuItem } from "../dropdown-menu";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "../textarea";
 import { useState } from "react";
+import TasksService, { ITask } from "@/shared/services/api/tasks/TasksService";
+import { toast } from "react-toastify";
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  createdAt: string;
-  completedAt?: string;
-}
 
-export function EditTaskModal({ task }: { task: Task }) {
+export function EditTaskModal({ task }: { task: ITask }) {
   const [error, setError] = useState<string | null>(null);
 
   const handleEditTask = (event: React.FormEvent<HTMLFormElement>) => {
@@ -49,18 +43,25 @@ export function EditTaskModal({ task }: { task: Task }) {
       return;
     }
 
-    if (!["Pendente", "Em Progresso", "Concluida"].includes(status)) {
-      setError("Selecione um status válido.");
-      return;
-    }
-
     if (status === "Concluida" && !completedAt) {
       setError("Data de conclusão é obrigatória para tarefas concluídas.");
       return;
     }
-
-    console.log({ title, description, status, completedAt });
-    // Aqui você pode enviar os dados para a API ou realizar outras ações.
+    
+    TasksService.updateById(task.id as string, {
+      title,
+      description,
+      status: status.toUpperCase() as "PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO",
+      completedAt: new Date(completedAt)
+    }).then((data) => {
+      if (data instanceof Error) {
+        setError("Falha ao criar tarefa.");
+        console.error(data.message);
+      } else {
+        toast.success("Tarefa criada com sucesso.");
+        window.location.reload();
+      }
+    })
   };
 
   return (
@@ -120,16 +121,16 @@ export function EditTaskModal({ task }: { task: Task }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="Pendente">Pendente</SelectItem>
-                  <SelectItem value="Em Progresso">Em Progresso</SelectItem>
-                  <SelectItem value="Concluida">Concluída</SelectItem>
+                  <SelectItem value="PENDENTE">Pendente</SelectItem>
+                  <SelectItem value="EM_PROGRESSO">Em Progresso</SelectItem>
+                  <SelectItem value="CONCLUIDA">Concluída</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
 
           {/* Campo de data de conclusão */}
-          {task.status === "Concluida" && (
+          {task.status === "CONCLUIDA" && (
             <div className="flex flex-col">
               <Label htmlFor="completedAt" className="text-sm font-medium text-gray-700">
                 Data de Conclusão
@@ -139,7 +140,7 @@ export function EditTaskModal({ task }: { task: Task }) {
                 name="completedAt"
                 type="date"
                 placeholder="Selecione a data de conclusão"
-                defaultValue={task.completedAt || ""}
+                defaultValue={task.completedAt ? task.completedAt.toString() : ""}
                 className="mt-1"
               />
             </div>

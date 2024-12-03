@@ -43,7 +43,7 @@ export class TaskDto {
 
   @ApiProperty({
     description: 'Task status',
-    example: 'OPEN',
+    example: 'CONCLUIDA',
   })
   @IsString()
   @IsNotEmpty()

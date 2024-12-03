@@ -3,10 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { AuthService } from "@/shared/services/api/auth/AuthService";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+import { getSession, signIn } from "next-auth/react";
 
 type LoginFormInputs = {
   email: string;
@@ -21,26 +23,37 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  // Verificar se o usuário já está logado
+  useEffect(() => {
+    getSession().then((session) => {
+      console.log(session)
+      if (session) {
+        redirect("/")
+      }
+      if (error) {
+        toast.error("Credenciais inválidas");
+      }
+    });
+  }, [])
+
 
   const onSubmit = async (data: LoginFormInputs) => {
     setIsLoading(true); // Ativar carregamento
-    try {
-      const response = await AuthService.login(data);
+    signIn(
+      "credentials",
+      {
+        ...data,
+        callbackUrl: "/",
+      },
+    ).then((response) => {
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+    });
 
-      if (response.success) {
-        toast.info("Login efetuado com sucesso");
-        router.push("/");
-      } else {
-        toast.error(response.message);
-        console.log(response.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao efetuar login. Tente novamente.");
-    } finally {
-      setIsLoading(false); // Desativar carregamento
-    }
   };
 
   return (
@@ -65,9 +78,8 @@ export default function LoginPage() {
               id="email"
               type="email"
               placeholder="Digite seu email"
-              className={`w-full px-4 py-2 border rounded-sm focus:outline-none ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-4 py-2 border rounded-sm focus:outline-none ${errors.email ? "border-red-500" : "border-gray-300"
+                }`}
               {...register("email", {
                 required: "O email é obrigatório",
                 pattern: {
@@ -91,9 +103,8 @@ export default function LoginPage() {
               id="password"
               type="password"
               placeholder="Digite sua senha"
-              className={`w-full px-4 py-2 border rounded-sm focus:outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-4 py-2 border rounded-sm focus:outline-none ${errors.password ? "border-red-500" : "border-gray-300"
+                }`}
               {...register("password", {
                 required: "A senha é obrigatória",
                 minLength: {
