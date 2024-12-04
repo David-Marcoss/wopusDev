@@ -1,7 +1,7 @@
 import { PrismaService } from 'src/database/PrismaService';
 import { CreateTaskDto } from '../dto/createTask.dto';
 import { TaskDto } from '../dto/task.dto';
-import { TaskStatus } from '@prisma/client';
+import { TaskStatus } from '../dto/createTask.dto';
 
 export class CreateTaskUseCases {
   constructor(private prisma: PrismaService) {}
