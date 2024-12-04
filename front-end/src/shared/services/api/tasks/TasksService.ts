@@ -1,3 +1,4 @@
+"use client"
 import { api } from "../ApiConfig"
 
 export interface ITask {
@@ -30,25 +31,14 @@ class TasksService {
         }
     }
 
-    // getById = async (id: string): Promise<ITasksResponse> => {
-    //     try {
-    //         const { data } = await api().get(`${this.routeName}/get-one-task/${id}`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${this.authToken}`
-    //             }
-    //         })
-    //         return data
-    //     } catch (error: any) {
-    //         if (!error.response) {
-    //             return {
-    //                 success: false,
-    //                 message: "Falha ao buscar tarefa",
-    //                 data: null
-    //             }
-    //         }
-    //         return error.response.data
-    //     }
-    // }
+    getById = async (id: string): Promise<ITask | Error> => {
+        try {
+            const { data } = await api().get(`${this.routeName}/${id}`)
+            return data
+        } catch (error: any) {
+            return error.message
+        }
+    }
 
     create = async (createData: ITask): Promise<ITask | Error> => {
         try {

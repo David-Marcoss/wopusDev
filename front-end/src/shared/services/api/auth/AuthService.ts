@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { api } from "../ApiConfig"
+import { register } from "module";
 
 export interface IAuthRegister {
     name: string,
@@ -27,7 +28,7 @@ export interface IAuthResponse {
 
 export const AuthService = {
     
-    update: async (userData:IAuthRegister):Promise<IAuthResponse> => {
+    register: async (userData:IAuthRegister):Promise<IAuthResponse> => {
         const routeName = "user/register"
         
         try {

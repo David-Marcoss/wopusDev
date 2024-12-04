@@ -31,13 +31,12 @@ export default function ProfilePage() {
       } else {
         const data = userData.data || { id: "", name: "", email: "" };
         setUserData(data);
-        reset(data); // Atualiza os campos do formulário
+        reset(data);
       }
     });
   }, [reset]);
 
   useEffect(() => {
-    // Atualiza os valores do formulário quando userData é alterado
     setValue("name", userData.name);
     setValue("email", userData.email);
   }, [userData, setValue]);
@@ -47,7 +46,6 @@ export default function ProfilePage() {
       name: data.name,
       email: data.email,
     }).then((response) => {
-
       if (response instanceof Error) {
         toast.error(response.message);
       } else {
@@ -55,13 +53,12 @@ export default function ProfilePage() {
         setUserData(data);
       }
     });
-
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <div className="w-[600px] h-[600px]">
-        <Card className="max-w-2xl mx-auto">
+    <div className="flex flex-col items-center justify-center h-full px-4 md:px-8">
+      <div className="w-full max-w-[600px]">
+        <Card className="w-full">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <Avatar className="h-24 w-24">
@@ -71,8 +68,10 @@ export default function ProfilePage() {
                 </AvatarFallback>
               </Avatar>
             </div>
-            <CardTitle className="text-2xl">Perfil do Usuário</CardTitle>
-            <CardDescription>Gerencie suas informações pessoais</CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Perfil do Usuário</CardTitle>
+            <CardDescription className="text-sm md:text-base">
+              Gerencie suas informações pessoais
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -80,7 +79,7 @@ export default function ProfilePage() {
                 <Label htmlFor="name">Nome</Label>
                 <Input
                   id="name"
-                  className="bg-[#FFFCE1]"
+                  className="bg-[#FFFCE1] text-sm md:text-base"
                   {...register("name", { required: "O nome é obrigatório" })}
                 />
                 {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
@@ -90,7 +89,7 @@ export default function ProfilePage() {
                 <Input
                   id="email"
                   type="email"
-                  className="bg-[#FFFCE1]"
+                  className="bg-[#FFFCE1] text-sm md:text-base"
                   {...register("email", {
                     required: "O email é obrigatório",
                     pattern: {
@@ -101,25 +100,20 @@ export default function ProfilePage() {
                 />
                 {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
               </div>
-              <div className="flex gap-4">
-            
-                  <Button
-                    type="submit"
-                    className="flex-1"
-                  >
-                    Salvar
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => {
-                      reset(userData);
-                    }}
-                  >
-                    Cancelar
-                  </Button>
+              <div className="flex flex-col gap-4 md:flex-row">
+                <Button type="submit" className="flex-1">
+                  Salvar
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    reset(userData);
+                  }}
+                >
+                  Cancelar
+                </Button>
               </div>
             </form>
           </CardContent>

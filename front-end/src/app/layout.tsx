@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AssideBar } from "@/components/ui/assidebar"
 import { getSession } from "next-auth/react"
 import { redirect } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 export default function RootLayout({
   children,
@@ -24,7 +24,6 @@ export default function RootLayout({
 
   useEffect(() => {
     getSession().then((session) => {
-      console.log(session)
       if (!session) {
         setIsAuthenticated(false)
         redirect("/login")
@@ -57,9 +56,12 @@ export default function RootLayout({
           cn("h-screen w-screen  bg-background font-sans antialiased")
         }
       >
-        {isAuthenticated && <AssideBar />}
-        {children}
-        <ToastContainer />
+        <Suspense>
+          {isAuthenticated && <AssideBar />}
+          {children}
+          <ToastContainer />
+        </Suspense>
+
       </body>
     </html>
   );

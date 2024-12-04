@@ -13,7 +13,7 @@ services:
     volumes:
       - auth_db_volume:/var/lib/postgresql/data
 
-  app:
+  backend:
     build:
       context: ./back-end/
       dockerfile: Dockerfile
@@ -25,5 +25,15 @@ services:
     volumes:
       - ./src:/app/src
 
+  frontend:
+    build:
+      context: ./front-end/
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/app/src
+      
 volumes:
   auth_db_volume:
