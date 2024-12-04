@@ -25,12 +25,9 @@ export interface IAuthResponse {
     } | null
 }
 
-
-
-
 export const AuthService = {
     
-    register: async (userData:IAuthRegister):Promise<IAuthResponse> => {
+    update: async (userData:IAuthRegister):Promise<IAuthResponse> => {
         const routeName = "user/register"
         
         try {

@@ -1,3 +1,5 @@
+"use client"
+
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -6,10 +8,11 @@ import { cn } from "../lib/utils";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
-export const metadata: Metadata = {
-  title: "Gerenciador de Tarefas",
-  description: "Gerencie suas tarefas de forma simples e eficiente.",
-};
+
+import { AssideBar } from "@/components/ui/assidebar"
+import { getSession } from "next-auth/react"
+import { redirect } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function RootLayout({
   children,
@@ -17,13 +20,44 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    getSession().then((session) => {
+      console.log(session)
+      if (!session) {
+        setIsAuthenticated(false)
+        redirect("/login")
+      }
+      setIsAuthenticated(true)
+    })
+  }, [])
+
   return (
     <html lang="pt-br">
+      <head>
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0"
+        />
+        <meta name="theme-color" content="#000000" />
+        <meta
+          name="description"
+          content="Gerencie suas tarefas de forma simples e eficiente."
+        />
+        <title>Gerenciador de Tarefas</title>
+        <link
+          rel="icon"
+          href="/favicon.ico"
+        />
+      </head>
       <body
         className={
           cn("h-screen w-screen  bg-background font-sans antialiased")
         }
       >
+        {isAuthenticated && <AssideBar />}
         {children}
         <ToastContainer />
       </body>

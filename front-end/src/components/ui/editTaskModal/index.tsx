@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 
 export function EditTaskModal({ task }: { task: ITask }) {
   const [error, setError] = useState<string | null>(null);
+  const [taskStatus, setTaskStatus] = useState<"PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO">(task.status);
 
   const handleEditTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -115,7 +116,11 @@ export function EditTaskModal({ task }: { task: ITask }) {
             <Label htmlFor="status" className="text-sm font-medium text-gray-700">
               Status
             </Label>
-            <Select defaultValue={task.status} name="status">
+            <Select 
+              name="status"
+              defaultValue={task.status}
+              onValueChange={(value) => setTaskStatus(value as "PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO")} 
+            >
               <SelectTrigger id="status" className="mt-1">
                 <SelectValue placeholder="Selecione o status" />
               </SelectTrigger>
@@ -130,7 +135,7 @@ export function EditTaskModal({ task }: { task: ITask }) {
           </div>
 
           {/* Campo de data de conclusão */}
-          {task.status === "CONCLUIDA" && (
+          {taskStatus === "CONCLUIDA" && (
             <div className="flex flex-col">
               <Label htmlFor="completedAt" className="text-sm font-medium text-gray-700">
                 Data de Conclusão

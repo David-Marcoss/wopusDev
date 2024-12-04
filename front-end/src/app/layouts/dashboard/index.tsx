@@ -16,8 +16,8 @@ import {
 import { useEffect, useState } from "react"
 import { CreateTaskModal } from "@/components/ui/createTaskModal"
 import TasksService, { ITask } from "@/shared/services/api/tasks/TasksService"
-
-
+import { set } from "react-hook-form"
+import { SkeletonCard } from "@/components/ui/skeletonCard"
 
 
 export default function Dashboard() {
@@ -25,9 +25,11 @@ export default function Dashboard() {
   const [status, setStatus] = useState<"PENDENTE" | "CONCLUIDA" | "EM_PROGRESSO" | "Todas">("Todas");
   const [tasks, setTasks] = useState<ITask[]>([]);
   const [tasksFiltered, setTasksFiltered] = useState<ITask[]>([]);
-  
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    
+    setIsLoading(true)
     TasksService.getAll().then((data) => {
       if (data instanceof Error) {
         console.log(data.message)
@@ -35,6 +37,7 @@ export default function Dashboard() {
         setTasks(data)
         setTasksFiltered(data)
       }
+      setIsLoading(false)
     })
 
   }, []);
@@ -100,7 +103,13 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {tasksFiltered.length === 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
+            ) : tasksFiltered.length === 0 ? (
               <div className="flex items-center justify-center m-10 p-10">
                 <h1>Ainda Não há tarefas cadastradas :( !!!</h1>
               </div>
@@ -112,6 +121,7 @@ export default function Dashboard() {
               </div>
             )}
           </CardContent>
+
         </Card>
       </div>
     </div>

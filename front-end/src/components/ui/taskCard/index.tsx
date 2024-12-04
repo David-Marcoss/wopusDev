@@ -67,6 +67,12 @@ export function TaskCard({ task }: { task: ITask }) {
                             <span className="text-base sm:text-xs text-gray-500">
                                 Criado em : {new Date(task.createdAt as Date).toLocaleDateString()}
                             </span>
+                            {task.completedAt && task.status === "CONCLUIDA" && (
+                                <span className="text-base sm:text-xs text-gray-500">
+                                    Concluído em : {new Date(task.completedAt as Date).toLocaleDateString()}
+                                </span>
+                            )
+                            }
                         </div>
                     </CardTitle>
 
