@@ -5,6 +5,7 @@
 <hr>
 
 Teste técnico para a vaga de desenvolvedor junior na empresa Wopus_Dev.
+Está aplicação consiste de um sistema web de gerenciamento de tarefas.
 
 <img src="Front-End/src/assets/img/home.png" alt="home" style="width: 100%;"/>
 
@@ -43,10 +44,6 @@ Para o Banco de Dados da aplicação foi utilizado:
 
 Para isso, acesse: [Instalar Docker](https://docs.docker.com/engine/install/) e [Instalar Docker Compose](https://docs.docker.com/compose/install/).
 
-Além disso, é necessário ter uma chave de API do Google Maps API para rodar o projeto. 
-
-Para obter a chave, acesse: [Obter chave Google Maps API](https://developers.google.com/maps/get-started?hl=pt-br).
-
 ### Configurando o Projeto:
 
 1. Acesse a pasta Back-end e crie um arquivo na raiz do projeto com o titulo **.env** acesse o arquivo **.env.example** copie seu conteudo e cole no arquivo **.env**:
@@ -66,9 +63,16 @@ Por fim dentro da pasta do projeto, abra um terminal e execulte o comando:
 
 Se tudo ocorrer bem voce deve ser capaz de acessar aplicação no seu navegador acessando a rota:
 
+- rota front-end: 
 
 ```
- http://localhost:4201/
+ http://localhost:3000/
+```
+
+- rota back-end: 
+
+```
+ http://localhost:3333/
 ```
 
 Para acessar a documentação da api da aplicação, acesse no navegador a rota: 
