@@ -57,7 +57,7 @@ Para isso, acesse: [Instalar Docker](https://docs.docker.com/engine/install/) e 
 Por fim dentro da pasta do projeto, abra um terminal e execulte o comando:
 
 ```
- docker compose up --build
+ docker-compose up --build
 ```
 
 
